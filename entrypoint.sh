@@ -19,9 +19,11 @@ setup_kubernetes_podman(){
     fi
     podman $PODMAN_OPTS system service --time 0 &
 
+    PODMAN_SOCKET=$(podman info --format '{{.Host.RemoteSocket.Path}}' 2>/dev/null)
+
     # Ensure socket exists 
     RETRIES=5
-    while [[ ! -S '/tmp/podman-run-1000/podman/podman.sock' ]]
+    while [[ ! -S "$PODMAN_SOCKET" ]]
     do
         if [[ $RETRIES -eq 0 ]]; then
             echo "[ERROR]: podman socket not found, exiting"
